@@ -120,13 +120,11 @@ el server virtual)
 
 (en pc real)
 
-![EN PC REAL](./img/.png){width="17cm"
-height="3.614cm"}
+![EN PC REAL](./img/etchostslocal.png)
 
 (en linux server virtual)
 
-![](Pictures/1000000000000463000000EA0BA9B829.png){width="17cm"
-height="3.542cm"}
+![EN SERVER](./img/etxhostsserver.png)
 
 ## 2\. Archivo .env
 
@@ -336,24 +334,20 @@ sudo systemctl reload nginx
 para el usuario admin pacat README.md
 ra entrar por primera vez.
 
-![](Pictures/10000000000003780000005A0B6430CE.png){width="17cm"
-height="1.722cm"}
+![contrasenya](./img/contrasenyageneradaparalogueaadmin.png)
 
 ### - Vamos al navedoador y en la barra URL escribo:
 
 http://www.phpmyadminservidorjesus.com/phpmyadmin
 
-### - Nos salta solo la primera vez un formulario de logueo que escribimos
-en el formulario usuario admin y la contraseña creada
+### - Nos salta solo la primera vez un formulario de logueo que escribimos en el formulario usuario admin y la contraseña creada
 
-![](Pictures/10000000000003780000005A0B6430CE.png){width="17cm"
-height="1.722cm"}
+![contrasenya](./img/contrasenyageneradaparalogueaadmin.png)
 
-![](Pictures/10000000000002D4000002D44123F4B4.png){width="17cm"
-height="11.596cm"}- Para entrar a phpmyadmin entramos con usuario
-phpmyadmin y contraseña phpmyadmin.
+- Para entrar a phpmyadmin entramos con usuario phpmyadmin y contraseña phpmyadmin
+
+  ![bienvenida](./img/bienvenidophpmyadmin.png)
 
 - Demostración de que se puede entrar después del logueo.
 
-![](Pictures/10000000000003BD000001A915239314.png){width="17cm"
-height="9.911cm"}
+  ![entrada](./img/entradaaphpmyadmin.png)
