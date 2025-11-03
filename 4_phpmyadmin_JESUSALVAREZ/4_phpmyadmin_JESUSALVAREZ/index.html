@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>Proceso_del_proyecto - Proyecto PHPMYADMIN</title>
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../..">Proyecto PHPMYADMIN</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="navitem">
+                                <a href="../.." class="nav-link">Inicio</a>
+                            </li>
+                            <li class="navitem active">
+                                <a href="./" class="nav-link">Proceso_del_proyecto</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../.." class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" class="nav-link disabled">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-light">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-level="1"><a href="#binbash-set-e" class="nav-link">!/bin/bash set -e</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-level="1"><a href="#binbash" class="nav-link">!/bin/bash</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<p><strong>phpmyadmin</strong></p>
+<p><strong>JESÚS ÁLVAREZ OLMO 2 ASIX</strong></p>
+<p><strong>Objectivo:</strong> Configurar phpMyAdmin en mi servidor Nginx, asegurarlo y dejarlo todo automatizado con scripts Bash.</p>
+<ol>
+<li><strong>Creo la estructura del proyecto</strong></li>
+</ol>
+<p>mkdir -p /home/vboxuser/practica4_phpmyadmin/{conf,scripts}</p>
+<ul>
+<li><strong>Entro en la carpeta practica4_phpmyadmin</strong></li>
+</ul>
+<p>cd /home/vboxuser/practica4_phpmyadmin </p>
+<ul>
+<li><strong>Dentro creo la carpeta conf, README.md y creo la carpeta scripts. Y dentro de la carpeta scripts pongo los scripts .env (donde se tienen que coger las contraseñas), estará el script install-lemp.sh (con instalacion del LEMP) y estará el script install_phpmyadmin.sh (con instalacion de phpmyadmin).</strong></li>
+<li><strong>Borro todo rasto de mariaDB porque creaba conflicto más adelante con mysql</strong></li>
+</ul>
+<p>sudo apt purge 'mariadb</p>
+<p>sudo systemctl stop mysql</p>
+<p>sudo apt purge mysql-server mysql-client mysql-common mariadb* -y sudo apt autoremove --purge -y</p>
+<p>sudo apt autoclean</p>
+<ul>
+<li><strong>A veces quedan datos en disco que impiden arrancar</strong></li>
+</ul>
+<p>sudo rm -rf /etc/mysql /var/lib/mysql /var/log/mysql /var/run/mysqld sudo systemctl restart nginx</p>
+<p>sudo systemctl restart php8.3-fpm</p>
+<ul>
+<li><strong>E instalo MySQL</strong></li>
+</ul>
+<p>sudo apt update</p>
+<p>sudo apt install mysql-server -y sudo systemctl status mysql</p>
+<p><strong>-Creo de nuevo el directorio del socket</strong></p>
+<p>sudo mkdir -p /var/run/mysqld</p>
+<p>sudo chown mysql:mysql /var/run/mysqld sudo chmod 755 /var/run/mysqld</p>
+<ul>
+<li><strong>Luego vamos a crear el archivo de configuración conf/phpmyadmin (el que Nginx usará para servir phpMyAdmin de forma segura y con autenticación básica).</strong></li>
+</ul>
+<p>server {</p>
+<p><code></code>listen 80;</p>
+<p><code></code>server_name www.phpmyadminservidorjesus.com;</p>
+<p><code></code>root /usr/share/phpmyadmin;</p>
+<p><code></code>index index.php index.html index.htm;</p>
+<p><code></code>access_log /var/log/nginx/phpmyadmin_access.log;     error_log /var/log/nginx/phpmyadmin_error.log;</p>
+<p><code></code>location / {</p>
+<p><code></code>try_files $uri $uri/ /index.php?$args;     }</p>
+<p><code></code>location ~ .php$ {</p>
+<p><code></code>include snippets/fastcgi-php.conf;</p>
+<p><code></code>fastcgi_pass unix:/run/php/php8.3-fpm.sock;</p>
+<p><code></code>fastcgi_param  SCRIPT_FILENAME</p>
+<p>$document_root$fastcgi_script_name;         include fastcgi_params;</p>
+<p><code></code>}</p>
+<p><code></code>location /phpmyadmin {</p>
+<p><code></code>auth_basic "Área restringida";</p>
+<p><code></code>auth_basic_user_file /etc/nginx/.htpasswd;     }</p>
+<p><code></code>location ~ /.ht {         deny all;</p>
+<p><code></code>}</p>
+<p>}</p>
+<ul>
+<li><strong>Y ahora recargo  nginx:</strong></li>
+</ul>
+<p>sudo nginx -t</p>
+<p>sudo systemctl reload nginx</p>
+<ul>
+<li><strong>Añado la fila 192.168.18.34 al archivo /etc/hosts (en el pc real y en el server virtual)</strong></li>
+</ul>
+<p>(en pc real)</p>
+<p><img alt="" src="../Aspose.Words.8ecf07a5-bb17-4329-9e06-4e1a64a15551.001.png" /></p>
+<p>(en linux server virtual)</p>
+<p><img alt="" src="../Aspose.Words.8ecf07a5-bb17-4329-9e06-4e1a64a15551.002.jpeg" /></p>
+<ol>
+<li><strong>Archivo .env</strong></li>
+</ol>
+<p><strong>(Este archivo define las variables usadas en los scripts.)</strong></p>
+<ul>
+<li>Variables de configuración SERVER_DOMAIN="www.servidorjesus.com" SERVER_IP="192.168.18.34" MYSQL_ROOT_PASSWORD="root" PHPMYADMIN_USER="phpmyadmin" PHPMYADMIN_PASS="phpmyadmin"</li>
+<li><strong>Script install_lemp.sh</strong></li>
+</ul>
+<p><strong>(Este script instala Nginx + MySQL + PHP-FPM, configurando PHP para Nginx.)</strong></p>
+<h1 id="binbash-set-e">!/bin/bash set -e</h1>
+<ul>
+<li>Cargar variables del entorno source "$(dirname "$0")/.env"</li>
+</ul>
+<p>echo "Instalando pila LEMP..."</p>
+<p>sudo apt update -y</p>
+<p>sudo apt install -y nginx mysql-server php-fpm php-mysql</p>
+<p>sudo systemctl enable nginx sudo systemctl enable mysql</p>
+<p>echo "LEMP instalado correctamente."</p>
+<ol>
+<li><strong>Script install_phpmyadmin.sh</strong></li>
+</ol>
+<p><strong>(Ahora automatizo phpMyAdmin + seguridad + autenticación MySQL + protección por .htpasswd.)</strong></p>
+<h1 id="binbash">!/bin/bash</h1>
+<p>set -e</p>
+<p>source "$(dirname "$0")/.env"</p>
+<p>echo "====================================================" echo "  Instalando y configurando phpMyAdmin para NGINX"</p>
+<p>echo "===================================================="</p>
+<ul>
+<li>1 -Instalación de phpMyAdmin y extensiones PHP necesarias</li>
+</ul>
+<p>echo "[1/6] Instalando phpMyAdmin y extensiones PHP..."</p>
+<p>sudo apt update -y</p>
+<p>sudo apt install -y phpmyadmin php-mbstring php-zip php-gd php-json php-curl php-cli</p>
+<ul>
+<li>2-Configuración MySQL</li>
+</ul>
+<p>echo "[2/6] Configurando MySQL..."</p>
+<p>sudo  mysql  -u  root  -p"${MYSQL_ROOT_PASSWORD}"  -e  "ALTER  USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '${MYSQL_ROOT_&gt;</p>
+<p>sudo mysql -u root -p"${MYSQL_ROOT_PASSWORD}" -e "CREATE USER IF NOT EXISTS '${PHPMYADMIN_USER}'@'localhost' IDENTIFIED BY '${PHPMYADMI&gt;</p>
+<p>sudo mysql -u root -p"${MYSQL_ROOT_PASSWORD}" -e "GRANT ALL PRIVILEGES ON *.* TO '${PHPMYADMIN_USER}'@'localhost' WITH GRANT OPTION;"</p>
+<p>sudo mysql -u root -p"${MYSQL_ROOT_PASSWORD}" -e "FLUSH PRIVILEGES;"</p>
+<ul>
+<li>3 -Detectar versión PHP activa</li>
+</ul>
+<p>PHP_VERSION=$(php -r "echo PHP_MAJOR_VERSION.'.'.PHP_MINOR_VERSION;") PHP_SOCK="/run/php/php${PHP_VERSION}-fpm.sock"</p>
+<p>echo "[3/6] Detectada versión PHP: ${PHP_VERSION}"</p>
+<ul>
+<li>4 -Configurar NGINX</li>
+</ul>
+<p>echo "[4/6] Configurando NGINX para phpMyAdmin..."</p>
+<p>sudo tee /etc/nginx/sites-available/phpmyadmin &gt;/dev/null &lt;&lt;EOF server {</p>
+<p><code></code>listen 80;</p>
+<p><code></code>server_name ${SERVER_DOMAIN};</p>
+<p><code></code>root /usr/share/phpmyadmin;</p>
+<p><code></code>index index.php index.html index.htm;</p>
+<ul>
+<li>Protección de acceso</li>
+</ul>
+<p><code></code>auth_basic "Restricted Access";</p>
+<p><code></code>auth_basic_user_file /etc/nginx/.htpasswd;</p>
+<p><code></code>location / {</p>
+<p><code></code>try_files \$uri \$uri/ /index.php?\$args;     }</p>
+<p><code></code>location ~ .php\$ {</p>
+<p><code></code>include snippets/fastcgi-php.conf;         fastcgi_pass unix:${PHP_SOCK};     }</p>
+<p><code></code>location ~ /.ht {         deny all;</p>
+<p><code></code>}</p>
+<p>}</p>
+<p>EOF</p>
+<p>sudo ln -sf /etc/nginx/sites-available/phpmyadmin /etc/nginx/sites-enabled/phpmyadmin</p>
+<ul>
+<li>5 -Crear .htpasswd sin apache2-utils</li>
+</ul>
+<p>echo "[5/6] Creando archivo de autenticación .htpasswd sin apache..." HTPASSWD_USER="admin"</p>
+<p>HTPASSWD_PASS=$(openssl rand -base64 12) HTPASSWD_HASH=$(openssl passwd -apr1 "$HTPASSWD_PASS")</p>
+<p>echo  "${HTPASSWD_USER}:${HTPASSWD_HASH}"  |  sudo  tee  /etc/nginx/.htpasswd &gt;/dev/null</p>
+<p>echo "Usuario: $HTPASSWD_USER"</p>
+<p>echo "Contraseña generada automáticamente: $HTPASSWD_PASS"</p>
+<ul>
+<li>6 -Verificar configuración y reiniciar NGINX echo "[6/6] Verificando configuración de NGINX..." sudo nginx -t</li>
+</ul>
+<p>sudo systemctl reload nginx</p>
+<ul>
+<li>Guardar copia de la configuración mkdir -p ~/practica4_phpmyadmin/conf sudo cp /etc/nginx/sites-available/phpmyadmin ~/practica4_phpmyadmin/conf/phpmyadmin.conf</li>
+</ul>
+<p>echo "====================================================" echo " phpMyAdmin instalado y configurado correctamente"</p>
+<p>echo "----------------------------------------------------"</p>
+<p>echo " URL:  http://${SERVER_IP}/phpmyadmin"</p>
+<p>echo " User: ${PHPMYADMIN_USER}"</p>
+<p>echo " Pass: ${PHPMYADMIN_PASS}"</p>
+<p>echo " Protegido por autenticación básica (.htpasswd)"</p>
+<p>echo "===================================================="</p>
+<ol>
+<li><strong>Ejecutar los scripts</strong></li>
+<li><strong>Primero, ejecuto la pila LEMP: ./install_lemp.sh</strong></li>
+<li><strong>Segundo, ejecuto ./install_phpmyadmin.sh</strong></li>
+</ol>
+<p><strong>sudo nginx -t</strong></p>
+<p><strong>sudo systemctl reload nginx</strong></p>
+<ul>
+<li><strong>En el verbose nos dice que se ha generado una contraseña temporal para el usuario admin para entrar por primera vez.</strong></li>
+</ul>
+<p><img alt="ref1" src="../Aspose.Words.8ecf07a5-bb17-4329-9e06-4e1a64a15551.003.png" /></p>
+<ul>
+<li><strong>Vamos al navedoador y en la barra URL escribo: http://www.phpmyadminservidorjesus.com/phpmyadmin</strong></li>
+<li><strong>Nos salta solo la primera vez un formulario de logueo que escribimos en el formulario usuario admin y la contraseña creada</strong> </li>
+</ul>
+<p><img alt="ref1" src="../Aspose.Words.8ecf07a5-bb17-4329-9e06-4e1a64a15551.003.png" /></p>
+<ul>
+<li><strong>Para entrar a phpmyadmin entramos con usuario phpmyadmin y contraseña phpmyadmin.</strong></li>
+</ul>
+<p><img alt="" src="../Aspose.Words.8ecf07a5-bb17-4329-9e06-4e1a64a15551.004.jpeg" /></p>
+<ul>
+<li><strong>Demostración de que se puede entrar después del logueo.</strong></li>
+</ul>
+<p><img alt="" src="../Aspose.Words.8ecf07a5-bb17-4329-9e06-4e1a64a15551.005.jpeg" /></p>
+<p><strong>ENLACE  GITHUB:</strong></p>
+<p><code></code><strong><a href="https://github.com/JesusKernel/practica4_phpmyadmin"><strong>https://github.com/JesusKernel/practica4_phpmyadmin</strong> </a>ENLACE GITHUB PAGES: <a href="https://jesuskernel.github.io/practica4_phpmyadmin/"><strong>https://jesuskernel.github.io/practica4_phpmyadmin/</strong></a></strong></p></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../../js/jquery-3.6.0.min.js"></script>
+        <script src="../../js/bootstrap.min.js"></script>
+        <script>
+            var base_url = "../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../js/base.js"></script>
+        <script src="../../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
